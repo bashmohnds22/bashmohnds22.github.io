@@ -1,0 +1,42 @@
+const textElement = document.getElementById('dynamic-text');
+
+// الكلمات التي سيتم عرضها
+const words = ["Ahmed", "a Civil Engineer", "a Web Developer", "Creative"];
+
+// إعدادات النص
+let wordIndex = 0;
+let letterIndex = 0;
+let currentWord = '';
+let isDeleting = false;
+const typingSpeed = 150;  // السرعة بين كتابة كل حرف
+const deletingSpeed = 100;  // السرعة عند حذف الحروف
+
+// دالة تغيير النص ديناميكيًا
+function typeText() {
+    if (isDeleting) {
+        // حذف الحروف
+        currentWord = words[wordIndex].substring(0, letterIndex--);
+    } else {
+        // كتابة الحروف
+        currentWord = words[wordIndex].substring(0, letterIndex++);
+    }
+
+    textElement.textContent = currentWord;
+
+    // التأكد من الوصول لنهاية الكلمة
+    if (!isDeleting && letterIndex === words[wordIndex].length) {
+        // التوقف قليلاً قبل الحذف
+        setTimeout(() => (isDeleting = true), 1000);
+    } else if (isDeleting && letterIndex === 0) {
+        // الانتقال للكلمة التالية بعد الحذف
+        isDeleting = false;
+        wordIndex = (wordIndex + 1) % words.length;
+    }
+
+    setTimeout(typeText, isDeleting ? deletingSpeed : typingSpeed);
+}
+
+// بدء الكتابة بمجرد تحميل الصفحة
+document.addEventListener('DOMContentLoaded', () => {
+    typeText();
+});
